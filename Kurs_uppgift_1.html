@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Issue tracker</title>
+
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body ng-app="issuetracker" ng-controller="Issues" class="container">
+    <h1>{{title}}</h1>
+
+    <form class="form-inline">
+      <!-- The variable for the input can sit directly in the controller $scope, not in $scope.issue,
+           because $scope.issue is only really for things in the ng-repeat below. -->
+
+      <input class="form-control" ng-model="newDescription" placeholder="Issue description...">
+      <button class="btn btn-primary" ng-click="createIssue()">Create issue</button>
+    </form>
+
+    <br>
+
+    <table class="table table-bordered table-hover">
+      <tr>
+        <th>
+          <!-- The id is a warning signal. See comment in the JavaScript about a directive. -->
+          <input type="checkbox" id="all-issues-checkbox" ng-model="allSelected" ng-change="selectOrDeselectAll()">
+        </th>
+        <th>
+          <button class="btn btn-default" ng-click="closeIssues()">Close</button>
+          <button class="btn btn-default" ng-click="reopenIssues()">Reopen</button>
+        </th>
+        <th></th>
+      </tr>
+      <tr ng-repeat="issue in issues" ng-class="issue.closed ? 'active' : 'success'">
+        <td>
+          <!-- Note that even if we don't include the .selected property in issues when we create
+               them, Angular will still do the right thing. Undefined/nonexistent is synonymous
+               with false. -->
+
+          <input type="checkbox" ng-model="issue.selected" ng-change="updateAllCheckbox()">
+          &nbsp; &nbsp;
+          <span class="glyphicon" ng-class="issue.closed ? 'glyphicon-remove' : 'glyphicon-ok'"></span>
+        </td>
+        <td>
+          {{issue.description}}
+        </td>
+        <td>
+          #{{issue.id}}
+        </td>
+      </div>
+    </table>
+ 
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+
+    <script>
+      var app = angular.module("issuetracker", []);
+
+      app.controller("Issues", ["$scope", function($scope) {
+        $scope.title = "Issue tracker";
+
+        $scope.issues = [
+          {
+            id: 1,
+            description: "Dialog box doesn't close after clicking 'Cancel'"
+          },
+          {
+            id: 2,
+            description: "There are fox ears in the actuarials module"
+          },
+          {
+            id: 3,
+            description: "Startup is too slow on the iPhone"
+          }
+        ];
+
+        // We have the choice between making this variable public (and part of $scope)
+        // or private (and part of the block). Since we don't see any use for external
+        // parties messing with this value, we make the variable private.
+        var uniqueId = $scope.issues.length + 1;
+
+        $scope.createIssue = function() {
+          $scope.issues.push({
+            id: uniqueId++,
+            description: $scope.newDescription
+          });
+          $scope.newDescription = "";
+        };
+
+        var doOnAllSelectedIssues = function(action) {
+          $scope.issues.forEach(function(issue) {
+            if (issue.selected) {
+              action(issue);
+            }
+          });
+        };
+
+        $scope.closeIssues = function() {
+          doOnAllSelectedIssues(function(issue) { issue.closed = true; });
+        };
+
+        $scope.reopenIssues = function() {
+          doOnAllSelectedIssues(function(issue) { issue.closed = false; });
+        };
+
+        // Warning bells should go off for the experienced AngularJS user at
+        // the sight of the jQuery calls in the following variable and two
+        // methods. This should really be done in the form of a directive;
+        // In the following two exercises, we'll encapsulate the jQuery logic
+        // and state in a directive instead, which is the correct way to deal
+        // with this.
+
+        var allIssuesCheckbox = $('#all-issues-checkbox');
+
+        // Checkboxes have a property called 'indeterminate' where they are
+        // somewhere in-between checked and unchecked. This is perfect for
+        // a checkbox that's supposed to signify "all selected". We need to
+        // manage this state ourselves, since there is no a-priori relation
+        // between this checkbox and those of the individual issues.
+        var indeterminate;
+
+        $scope.selectOrDeselectAll = function() {
+          if (indeterminate) {
+            $scope.allSelected = false;
+            allIssuesCheckbox.prop('checked', false);
+          }
+          indeterminate = false;
+
+          $scope.issues.forEach(function(issue) {
+            issue.selected = $scope.allSelected;
+          });
+        };
+
+        var selected = function(o) { return o.selected };
+        var deselected = function(o) { return !o.selected };
+
+        $scope.updateAllCheckbox = function() {
+          $scope.allSelected = $scope.issues.every(selected);
+          var noneSelected = $scope.issues.every(deselected);
+
+          indeterminate = !$scope.allSelected && !noneSelected;
+          allIssuesCheckbox.prop('indeterminate', indeterminate);
+        };
+      }]);
+    </script>
+  </body>
+</html>

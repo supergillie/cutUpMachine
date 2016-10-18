@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Issue tracker</title>
+
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body ng-app="petertest" ng-controller="Issues" class="container">
+    <h1>{{title}}</h1>
+
+    <form class="form-inline">
+      <!-- The variable for the input can sit directly in the controller $scope, not in $scope.issue,
+           because $scope.issue is only really for things in the ng-repeat below. -->
+
+      <input class="form-control" ng-model="newDescription" placeholder="Issue description...">
+      <button class="btn btn-primary" ng-click="createIssue()">Create issue</button>
+    </form>
+
+    <br>
+
+    <table class="table table-bordered table-hover">
+      <tr>
+        <th>
+          <!-- The id is a warning signal. See comment in the JavaScript about a directive. -->
+          <input type="checkbox" id="all-issues-checkbox" ng-model="allSelected" ng-change="selectOrDeselectAll()">
+        </th>
+        <th>
+          <button class="btn btn-default" ng-click="closeIssues()">Close</button>
+          <button class="btn btn-default" ng-click="reopenIssues()">Reopen</button>
+        </th>
+        <th></th>
+      </tr>
+      <tr ng-repeat="issue in issues" ng-class="issue.closed ? 'active' : 'success'">
+        <td>
+          <!-- Note that even if we don't include the .selected property in issues when we create
+               them, Angular will still do the right thing. Undefined/nonexistent is synonymous
+               with false. -->
+
+          <input type="checkbox" ng-model="issue.selected" ng-change="updateAllCheckbox()">
+          &nbsp; &nbsp;
+          <span class="glyphicon" ng-class="issue.closed ? 'glyphicon-remove' : 'glyphicon-ok'"></span>
+        </td>
+        <td>
+          {{issue.description}}
+        </td>
+        <td>
+          #{{issue.id}}
+        </td>
+      </div>
+    </table>
+ 
+    <script src="js/3pp/jquery.min.js"></script>
+	<script src="js/3pp/angular.min.js"></script>
+	<script src="js/3pp/angular-route.min.js"></script>
+	<script src="js/3pp/angular-resource.min.js"></script>
+<script src="js/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Issue tracker</title>
+
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  
+  
+  <body ng-app="issuetracker" ng-controller="Issues" class="container">
+    <h1>{{title}}</h1>
+  
+    <div class="childBox" ng-init="initRand()" class="col-md-{{getRandomSpan()}} box">
+
+	<h1>
+    <button ng-click=initRand()>
+  	Randomize	
+	</button>
+ 
+    {{getRandomSpan()}}
+    <br>
+    {{getRandomSpan2()}}
+    
+    </h1>
+         
+    </div>
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+
+    <script>
+      var app = angular.module("issuetracker", []);
+      var rand = 1;
+     
+      app.controller("Issues", ["$scope", function($scope) {
+  	   
+    	$scope.title = "Your random number is: ";
+
+    	
+        $scope.initRand = function(){
+            rand = Math.floor((Math.random()*10)+1)
+        	rand2 = Math.floor((Math.random()*6)+1)
+        }
+
+        $scope.getRandomSpan = function(){
+          return rand;
+        }
+        
+        $scope.getRandomSpan2 = function(){
+            return rand2;
+          }
+        
+
+      }]);
+    </script>
+  </body>
+</html>
+
+ 

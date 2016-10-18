@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+<!-- http://tts.peterjurkovic.com/ -->
+  <style>
+ 
+    textarea
+    {
+      width: 700px;
+      height: 100px;
+      vertical-align: middle;
+    }
+
+    .valueItems
+    {
+      display: inline-block;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+
+  <body ng-app="cutUp" ng-controller="Words" class="container">
+  <div>
+ 
+    <h1>Input text:</h1>
+    <textarea id="textareaEdit" ng-model="textareaValue"></textarea>
+    <br>
+    <span class="valueItems"><h1>Cut up result:</h1> {{textareaValue}}</span>
+<br>
+    <span class="valueItems"><h1>Randomizedresult:</h1> {{getRandomSpan()}}</span>
+    
+ </div>
+
+<!-- ----------------script--------------------------- -->
+
+<script>
+      var app = angular.module("cutUp", []);
+
+      var rand = 1;
+     
+      app.controller("Words", ["$scope", function($scope) {
+ 
+ 
+
+        $scope.getRandomSpan = function(){
+          rand = Math.floor((Math.random()*10)+1)
+          return rand;
+   
+        $scope.getRandomText = function(){
+        	return textareaValue;
+        } 
+          
+        }
+ 
+        
+
+      }]);
+    </script>
+
+
+
+</body>
+</html>
